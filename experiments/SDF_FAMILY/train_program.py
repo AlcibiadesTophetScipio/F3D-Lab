@@ -253,5 +253,5 @@ def reconstruct(data_loader, rec_files, net, ws, latent_size):
                             # offset=data['norm']['offset'],
                             # scale=data['norm']['offset'])
 
-        print('Stop!')
+        #print('Stop!')
 
