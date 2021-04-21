@@ -1,0 +1,41 @@
+{
+  "ExperimentsDir": "/home/syao/Program/Experiments/N3D/SDF_FAMILY",
+  "ExperimentName": "dfaust_deepsdf_v1",
+  "ProcessedData": "Data",
+  "DatasetsDir": "/home/syao/Program/Experiments/SM/Data",
+  "TrainSplit": "/home/syao/Program/Source/New3D/data_split_config/dfaust/dfaust_50002_train.json",
+  "TestSplit": "/home/syao/Program/Source/New3D/data_split_config/dfaust/dfaust_50002_test.json",
+  "NumEpochs": 2000,
+  "SnapshotFrequency" : 400,
+  "AdditionalSnapshots" : [ 100, 300 ],
+  "DataLoaderThreads" : 8,
+  "NetworkSpecs" : {
+    "dims" : [ 512, 512, 512, 512, 512, 512, 512, 512 ],
+    "dropout" : [0, 1, 2, 3, 4, 5, 6, 7],
+    "dropout_prob" : 0.2,
+    "norm_layers" : [0, 1, 2, 3, 4, 5, 6, 7],
+    "latent_in" : [4],
+    "xyz_in_all" : false,
+    "use_tanh" : false,
+    "latent_dropout" : false,
+    "weight_norm" : true
+    },
+  "CodeLength" : 256,
+  "CodeRegularization" : true,
+  "CodeRegularizationLambda" : 1e-4,
+  "CodeBound" : 1.0,
+  "LearningRateSchedule" : [
+    {
+      "Type" : "Step",
+      "Initial" : 0.0005,
+      "Interval" : 500,
+      "Factor" : 0.5
+    },
+    {
+      "Type" : "Step",
+      "Initial" : 0.001,
+      "Interval" : 500,
+      "Factor" : 0.5
+    }],
+  "SamplesPerScene" : 16384
+}
