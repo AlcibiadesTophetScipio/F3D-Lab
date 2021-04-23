@@ -1,6 +1,6 @@
 import os
 import sys
-rootpath=str("/home/syao/Program/Source/New3D")
+rootpath=str("/home/syao/Program/Source/F3D-Lab")
 sys.path.append(rootpath)
 sys.path.extend([rootpath+i for i in os.listdir(rootpath) if i[0]!="."])
 
@@ -32,21 +32,21 @@ if __name__ == '__main__':
     arg_parser.add_argument(
         '-e',
         dest='experiment_config',
-        default='/home/syao/Program/Source/New3D/experiments/SDF_FAMILY/experiments_config/dfaust_deepsdf.json',
+        default='/home/syao/Program/Source/F3D-Lab/experiments/SDF_FAMILY/experiments_config/dfaust_deepsdf.json',
     )
     arg_parser.add_argument(
         "--batch_size",
         type=int,
-        default="16"
+        default="36"
     )
     arg_parser.add_argument(
         "--load_epoch",
         type=int,
-        default=-1
+        default=1
     )
     arg_parser.add_argument(
         '--run_type',
-        default='rec'
+        default='train'
     )
     args = arg_parser.parse_args()
 
@@ -121,6 +121,7 @@ if __name__ == '__main__':
     # network setting
     latent_size = exper_specs["CodeLength"]
     net = DeepSDF_Decoder(latent_size, **exper_specs['NetworkSpecs']).cuda()
+    net = torch.nn.DataParallel(net)
 
     # latent code setting
     code_bound = get_spec_with_default(exper_specs, "CodeBound", None)
