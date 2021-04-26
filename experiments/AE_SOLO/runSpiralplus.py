@@ -67,7 +67,7 @@ if __name__ == '__main__':
 
     # log config
     log_dir = params_io.ws.get_dir('log_dir')
-    logger = log_config(filename=log_dir / '{}_info.log'.format(current_time))
+    logger = log_config(filename=log_dir / '{}_{}_info.log'.format(args.run_type, current_time))
     logger.info(args)
     tensor_board_dir = params_io.ws.get_dir('tensor_board_dir') / f'{args.run_type}_{current_time}'
     # tensor_board_dir = params_io.ws.get_dir('tensor_board_dir')

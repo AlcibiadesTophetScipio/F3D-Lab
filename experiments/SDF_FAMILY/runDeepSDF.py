@@ -46,7 +46,7 @@ if __name__ == '__main__':
     )
     arg_parser.add_argument(
         '--run_type',
-        default='rec'
+        default='eval'
     )
     args = arg_parser.parse_args()
 
@@ -56,8 +56,8 @@ if __name__ == '__main__':
     # workspace config
     base_dir = exper_specs['ExperimentsDir']
     experiment_dir = base_dir + '/' + exper_specs['ExperimentName']
-    processed_data_dir = exper_specs['DatasetsDir']
-    # processed_data_dir = base_dir + '/' + exper_specs['ProcessedData']
+    # processed_data_dir = exper_specs['DatasetsDir']
+    processed_data_dir = base_dir + '/' + exper_specs['ProcessedData']
     train_split_file = exper_specs['TrainSplit']
     test_split_file = exper_specs['TestSplit']
     ws = get_workspace(experiment_dir=experiment_dir,
@@ -70,7 +70,7 @@ if __name__ == '__main__':
 
     # log config
     log_dir = params_io.ws.get_dir('log_dir')
-    logger = log_config(filename=log_dir / '{}_info.log'.format(current_time))
+    logger = log_config(filename=log_dir / '{}_{}_info.log'.format(args.run_type, current_time))
     logger.info(args)
     tensor_board_dir = params_io.ws.get_dir('tensor_board_dir') / f'{args.run_type}_{current_time}'
     # tensor_board_dir = params_io.ws.get_dir('tensor_board_dir')
@@ -216,14 +216,17 @@ if __name__ == '__main__':
                 params_io.save_latest(epoch=epoch, info=save_info)
     elif args.run_type == 'eval':
         # eval
+        eval_files = {'gt_sample':[f.with_suffix('.ply') for f in
+                                   pdata_test_io.get_instance_filenames('sdf_surface_dir')],
+                      'rec': [params_io.ws.get_dir('reconstruction_meshes_dir') / (f[1:]+'.ply')
+                              for f in pdata_test_io.filenames],
+                      'gt': [Path(exper_specs['DatasetsDir']) / (f[1:]+'.obj')
+                             for f in pdata_test_io.filenames]
+                      }
         # the data type of faces must be represented by a long data type, not use the pytorch tensorboard docs
-        faces = torch.from_numpy(mesh_template.f.astype(np.int64)).unsqueeze(0)
-        test_metric, test_statistic, iter_num = eval(data_loader=test_loader,
-                                                     net=net,
-                                                     data_norm=test_norm,
+        test_metric, test_statistic, iter_num = eval(files=eval_files,
                                                      load_epoch=start_epoch-1,
-                                                     t_writer=tensor_board_writer,
-                                                     faces=faces)
+                                                     t_writer=tensor_board_writer)
         for k,v in test_metric.items():
             logger.info("The {} distance is {}".format(k, v / iter_num))
         for k,v in test_statistic.items():

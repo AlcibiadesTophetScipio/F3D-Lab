@@ -10,6 +10,7 @@ class vcoconv(MessagePassing):
         super().__init__(aggr='add', flow="target_to_source", node_dim=-2)
         self.in_channels = in_channels
         self.out_channels = out_channels
+        self.weight_num = weight_num
         weights = nn.Parameter(torch.randn(weight_num, out_channels*in_channels))
         self.register_parameter("weights", weights)
 
@@ -42,6 +43,7 @@ class vcoconv(MessagePassing):
         return aggr_out+self.bias
 
     def __repr__(self):
-        return '{}({}, {})'.format(self.__class__.__name__,
-                                                  self.in_channels,
-                                                  self.out_channels)
+        return '{}({}, {}, {})'.format(self.__class__.__name__,
+                                       self.in_channels,
+                                       self.out_channels,
+                                       self.weight_num)

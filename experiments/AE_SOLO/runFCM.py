@@ -67,7 +67,7 @@ if __name__ == '__main__':
 
     # log config
     log_dir = params_io.ws.get_dir('log_dir')
-    logger = log_config(filename=log_dir / '{}_info.log'.format(current_time))
+    logger = log_config(filename=log_dir / '{}_{}_info.log'.format(args.run_type, current_time))
     logger.info(args)
     tensor_board_dir = params_io.ws.get_dir('tensor_board_dir') / f'{args.run_type}_{current_time}'
     # tensor_board_dir = params_io.ws.get_dir('tensor_board_dir')
@@ -131,9 +131,10 @@ if __name__ == '__main__':
     net = FCMNet(downsample_matrices=D_t,
                  upsample_matrices=U_t,
                  adjacency_matrices=A_t,
-                 filters=[3, 16, 16, 16, 32],
+                 filters=[3, 16, 32, 64, 32],
                  num_nodes=num_nodes,
-                 weight_num=16).cuda()
+                 z_dim=16*16,
+                 weight_num=32).cuda()
 
     # optimizer setting
     lr_schedules = get_lr(lr_config=exper_specs['LearningRateSchedule'])

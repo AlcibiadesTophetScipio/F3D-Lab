@@ -1,5 +1,8 @@
 from collections import defaultdict
 import torch.nn.functional as F
+from tqdm import tqdm
+import trimesh
+from pathlib import Path
 
 from utils.metrics import *
 from workspace import get_spec_with_default
@@ -7,11 +10,6 @@ from mesh_tools.mesh_operator import convert_sdf_samples_to_ply
 
 __package__ = 'experiments.SDF_FAMILY'
 from .data_process import unpack_sdf_samples_from_ram
-
-def calculate_metric(gt,pred):
-    return {'euclidean': euclideanDis_bpm(gt, pred),
-            'chamfer': chamferDis_bpm(gt, pred),
-            'l1': l1Dis_bpm(gt, pred)}
 
 def train(data_loader, net, optimizer, lat_vecs, exper_specs, epoch):
     net.train()
@@ -74,50 +72,73 @@ def train(data_loader, net, optimizer, lat_vecs, exper_specs, epoch):
 
     return loss, metric, len(data_loader)
 
-def eval(data_loader, net, data_norm, load_epoch=0, t_writer=None, faces=None):
-    net.eval()
+def calculate_trimesh_metric(gt_mesh, pred_mesh, num_mesh_samples=30000):
+    pred_points_sampled = trimesh.sample.sample_surface(pred_mesh, num_mesh_samples)[0]
+    gt_points_np = gt_mesh.vertices
+
+    pred_points = torch.tensor(pred_points_sampled).unsqueeze(0).cuda()
+    gt_points = torch.tensor(gt_points_np).unsqueeze(0).cuda()
+
+    # Since there is no one-to-one point mapping relation
+    return {'chamfer': chamferDis_bpm(gt_points, pred_points),}
+
+def eval(files, load_epoch=0, t_writer=None):
+    rec_files = files['rec']
+    gt_files = files['gt']
+    gt_sample_files = files['gt_sample']
+
     metric = defaultdict(float)
-    metric_euclidean_statistic = []
 
-    mean = data_norm['mean'].cuda()
-    std = data_norm['std'].cuda()
+    tensor_show_num = len(rec_files) * 0.1 if len(rec_files) * 0.1 < 20 else 20
+    tensor_show_list = torch.round(torch.rand(tensor_show_num) * len(rec_files))
+    iter_num = 0
+    for idx in tqdm(range(len(rec_files))):
+        if not Path(rec_files[idx]).is_file():
+            continue
 
-    tensor_show_num = len(data_loader)*0.1 if len(data_loader)*0.1<20 else 20
-    tensor_show_list = torch.round(torch.rand(tensor_show_num)*len(data_loader))
-    with torch.no_grad():
-        for data, indices in data_loader:
-            point_cloud = data['points'].cuda()
-            x = (point_cloud - mean) / std
-            gt = {'x': x}
-            pred = net(gt)
+        iter_num+=1
+        rec_mesh = trimesh.load(rec_files[idx])
+        gt_mesh = trimesh.load(gt_files[idx])
+        gt_sample_mesh = trimesh.load(gt_sample_files[idx])
 
-            recover = pred['re_x'] * std + mean
-            instance_metric = calculate_metric(gt=point_cloud, pred=recover)
-            for k, v in instance_metric.items():
-                metric[k] += v
+        gt_gts = calculate_trimesh_metric(gt_mesh=gt_mesh, pred_mesh=gt_sample_mesh)
+        gt_rec = calculate_trimesh_metric(gt_mesh=gt_mesh, pred_mesh=rec_mesh)
+        gts_rec = calculate_trimesh_metric(gt_mesh=gt_sample_mesh, pred_mesh=rec_mesh)
 
-            # construct statistic like coma
-            metric_euclidean_statistic.append(euclideanDis_keep(point_cloud, recover))
+        for k,v in gt_gts.items():
+            metric[f'{k}_gt2gts'] = v
+        for k,v in gt_rec.items():
+            metric[f'{k}_gt2rec'] = v
+        for k,v in gts_rec.items():
+            metric[f'{k}_gts2rec'] = v
 
-            # show mesh in tensorboard
-            if t_writer and indices in tensor_show_list:
-                tag = '{}/gt'.format(indices.item())
-                t_writer.add_mesh(tag=tag,
-                                  global_step=load_epoch,
-                                  vertices=point_cloud,
-                                  faces=faces)
-                tag = '{}/pred'.format(indices.item())
-                t_writer.add_mesh(tag=tag,
-                                  global_step=load_epoch,
-                                  vertices=recover,
-                                  faces=faces)
+        if t_writer and idx in tensor_show_list:
+            name = '_'.join(rec_files[idx].parts[-3:])
+            tag = '{}/rec'.format(name)
+            vertices = torch.tensor(rec_mesh.vertices).unsqueeze(0)
+            faces = torch.tensor(rec_mesh.faces).unsqueeze(0)
+            t_writer.add_mesh(tag=tag,
+                              global_step=load_epoch,
+                              vertices=vertices,
+                              faces=faces)
 
-    statistic_error = torch.cat(metric_euclidean_statistic, dim=0)
-    statistic = {"statistic_mean": statistic_error.mean(),
-                 "statistic_std": statistic_error.std(),
-                 "statistic_median": statistic_error.median()}
+            tag = '{}/gt'.format(name)
+            vertices = torch.tensor(gt_mesh.vertices).unsqueeze(0)
+            faces = torch.tensor(gt_mesh.faces).unsqueeze(0)
+            t_writer.add_mesh(tag=tag,
+                              global_step=load_epoch,
+                              vertices=vertices,
+                              faces=faces)
 
-    return metric, statistic, len(data_loader)
+            vertices = torch.tensor(gt_sample_mesh.vertices).unsqueeze(0)
+            faces = torch.tensor(gt_sample_mesh.faces).unsqueeze(0)
+            tag = '{}/gts'.format(name)
+            t_writer.add_mesh(tag=tag,
+                              global_step=load_epoch,
+                              vertices=vertices,
+                              faces=faces)
+
+    return metric, {}, iter_num
 
 def sdf_create_mesh(decoder, latent_vec, filename,
                     N=256, max_batch=32 ** 3, offset=None, scale=None):
@@ -223,11 +244,16 @@ def reconstruct(data_loader, rec_files, net, ws, latent_size):
     mesh_dir = ws.get_dir('reconstruction_meshes_dir')
     latent_dir = ws.get_dir('rec_latent_code_dir')
 
-    for data, idx in data_loader:
-        mesh_file = mesh_dir/'{}.ply'.format(rec_files[idx][1:].replace('/','-'))
-        latent_vec_file = latent_dir/'{}.pth'.format(rec_files[idx][1:].replace('/','-'))
+    for data, idx in tqdm(data_loader):
+        # mesh_file = mesh_dir/'{}.ply'.format(rec_files[idx][1:].replace('/','-'))
+        # latent_vec_file = latent_dir/'{}.pth'.format(rec_files[idx][1:].replace('/','-'))
+        mesh_file = mesh_dir / '{}.ply'.format(rec_files[idx][1:])
+        latent_vec_file = latent_dir / '{}.pth'.format(rec_files[idx][1:])
         if mesh_file.is_file() and latent_vec_file.is_file():
             continue
+        else:
+            mesh_file.parent.mkdir(parents=True, exist_ok=True)
+            latent_vec_file.parent.mkdir(parents=True, exist_ok=True)
 
         data_sdf = data['sdf']
         data_sdf[0] = data_sdf[0].reshape(-1,4)
@@ -249,9 +275,9 @@ def reconstruct(data_loader, rec_files, net, ws, latent_size):
                             latent_vec=latent_vec,
                             filename=mesh_file,
                             N=256,
-                            max_batch=int(2 ** 18))
-                            # offset=data['norm']['offset'],
-                            # scale=data['norm']['offset'])
+                            max_batch=int(2 ** 18),
+                            offset=data['norm']['offset'],
+                            scale=data['norm']['scale'])
 
         #print('Stop!')
 

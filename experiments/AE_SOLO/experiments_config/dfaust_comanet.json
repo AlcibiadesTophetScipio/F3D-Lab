@@ -1,10 +1,10 @@
 {
   "ExperimentsDir": "/home/syao/Program/Experiments/N3D/AE_SOLO",
-  "ExperimentName": "dfaust_comasample_comanet_v1",
+  "ExperimentName": "dfaust_comasample_comanet_v2",
   "ProcessedData": "Data",
-  "DatasetsDir": "/home/syao/Program/Datasets/",
-  "TrainSplit": "/home/syao/Program/Source/New3D/data_split_config/dfaust/dfaust_50002_train.json",
-  "TestSplit": "/home/syao/Program/Source/New3D/data_split_config/dfaust/dfaust_50002_test.json",
+  "DatasetsDir": "/DATA",
+  "TrainSplit": "/home/syao/Program/Source/New3D/data_split_config/dfaust_regis/dfaust_50002_train.json",
+  "TestSplit": "/home/syao/Program/Source/New3D/data_split_config/dfaust_regis/dfaust_50002_test.json",
   "TemplateFile": "/home/syao/Program/Datasets/templates/faust_template.ply",
   "TemplateSample": "/home/syao/Program/Datasets/templates/dfaust_sample.pth",
   "LearningRateSchedule": {

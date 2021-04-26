@@ -2,7 +2,7 @@
   "ExperimentsDir": "/home/syao/Program/Experiments/N3D/AE_SOLO",
   "ExperimentName": "dfaust_comasample_spiralnet_plus_v1",
   "ProcessedData": "Data",
-  "DatasetsDir": "/home/syao/Program/Datasets/",
+  "DatasetsDir": "/DATA",
   "TrainSplit": "/home/syao/Program/Source/New3D/data_split_config/dfaust/dfaust_50002_train.json",
   "TestSplit": "/home/syao/Program/Source/New3D/data_split_config/dfaust/dfaust_50002_test.json",
   "TemplateFile": "/home/syao/Program/Datasets/templates/faust_template.ply",
