@@ -160,7 +160,6 @@ def convert_sdf_samples_to_ply(
     num_faces = faces.shape[0]
 
     verts_tuple = np.zeros((num_verts,), dtype=[("x", "f4"), ("y", "f4"), ("z", "f4")])
-
     for i in range(0, num_verts):
         verts_tuple[i] = tuple(mesh_points[i, :])
 

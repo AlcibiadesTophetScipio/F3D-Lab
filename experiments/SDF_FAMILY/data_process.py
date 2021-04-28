@@ -54,6 +54,7 @@ def unpack_sdf_samples_from_ram(data, subsample=None):
     pos_size = pos_tensor.shape[0]
     neg_size = neg_tensor.shape[0]
 
+    # for continue sampling
     pos_start_ind = random.randint(0, pos_size - half)
     sample_pos = pos_tensor[pos_start_ind : (pos_start_ind + half)]
 
@@ -104,8 +105,8 @@ class SDFSamples(torch.utils.data.Dataset):
                 }, idx
 
 if __name__ == '__main__':
-    data_split_file = '/home/syao/Program/Source/New3D/data_split_config/dfaust/dfaust_50002_test.json'
-    data_dir = '/home/syao/Program/Experiments/SM/Data'
+    data_split_file = '/home/syao/Program/Source/New3D/data_split_config/dfaust_regis/dfaust_50002_test.json'
+    data_dir = '/home/syao/Program/Experiments/N3D/SDF_FAMILY/Data'
 
     base_dir = Path(data_dir)
     sub_dir = {
@@ -142,6 +143,7 @@ if __name__ == '__main__':
     for data, indices in tqdm(sm_loader):
         sdf = data['sdf']
         norm = data['norm']
+        import pdb; pdb.set_trace()
         pass
 
     end_time = time.time()

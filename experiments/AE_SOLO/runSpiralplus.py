@@ -31,7 +31,7 @@ if __name__ == '__main__':
     t = time.time()
 
     import argparse
-    arg_parser = argparse.ArgumentParser(description="Train a SM network")
+    arg_parser = argparse.ArgumentParser()
     arg_parser.add_argument(
         '-e',
         dest='experiment_config',

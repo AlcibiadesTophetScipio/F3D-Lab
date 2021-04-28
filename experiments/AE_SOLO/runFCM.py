@@ -31,11 +31,11 @@ if __name__ == '__main__':
     t = time.time()
 
     import argparse
-    arg_parser = argparse.ArgumentParser(description="Train a SM network")
+    arg_parser = argparse.ArgumentParser()
     arg_parser.add_argument(
         '-e',
         dest='experiment_config',
-        default='/home/syao/Program/Source/New3D/experiments/AE_SOLO/experiments_config/dfaust_fcmnet.json',
+        default='/home/syao/Program/Source/New3D/experiments/AE_SOLO/experiments_config/dfaust_fcmnet_v2.json',
     )
     arg_parser.add_argument(
         "--batch_size",
@@ -131,10 +131,8 @@ if __name__ == '__main__':
     net = FCMNet(downsample_matrices=D_t,
                  upsample_matrices=U_t,
                  adjacency_matrices=A_t,
-                 filters=[3, 16, 32, 64, 32],
                  num_nodes=num_nodes,
-                 z_dim=16*16,
-                 weight_num=32).cuda()
+                 **exper_specs['NetworkSpecs']).cuda()
 
     # optimizer setting
     lr_schedules = get_lr(lr_config=exper_specs['LearningRateSchedule'])

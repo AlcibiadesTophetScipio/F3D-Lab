@@ -17,16 +17,26 @@ A platform for doing some experiments about 3D things.
 
 * Spiral++ (ICCV Workshops, 2019) [[paper](https://arxiv.org/abs/1911.05856)] [[code](https://github.com/sw-gong/spiralnet_plus)] 
 
-* MeshCNN (ACM TOG, 2019) [[paper][meshcnn_paper]] [[code][meshcnn_code]] [[project][meshcnn_project]] 
+* MeshCNN (ACM TOG, 2019) [[paper][meshcnn_paper]] [[code][meshcnn_code]] [[project][meshcnn_project]]
+
+* DCM-Net (CVPR, 2020) [[paper](https://arxiv.org/abs/2004.01002)] [[code](https://github.com/VisualComputingInstitute/dcm-net/)] [[project](https://visualcomputinginstitute.github.io/dcm-net/)]
 
 * FCMA (NeurIPS, 2020) [[paper](https://arxiv.org/abs/2006.04325)] [[code](https://github.com/facebookresearch/VCMeshConv)] [[project](https://zhouyisjtu.github.io/project_vcmeshcnn/vcmeshcnn.html)] 
 
 ### Implicit Representation Methods
+* OccupancyNet (CVOR, 2019) [[paper](https://arxiv.org/abs/1812.03828)] [[code](https://github.com/autonomousvision/occupancy_networks)]
+
+* IM-Net (CVPR, 2019) [[paper](https://arxiv.org/abs/1812.02822)] [[code](https://github.com/czq142857/IM-NET-pytorch)] [[project](https://www.sfu.ca/~zhiqinc/imgan/Readme.html)]
+
 * DeepSDF (CVPR, 2019) [[paper](https://arxiv.org/abs/1901.05103)] [[code](https://github.com/facebookresearch/DeepSDF)]
 
 * MeshSDF (NeurIPS, 2020) [[paper](https://arxiv.org/abs/2006.03997)] [[code](https://github.com/cvlab-epfl/MeshSDF)]
 
 * LoopReg (NeurIPS, 2020) [[paper](https://arxiv.org/abs/2010.12447)] [[code](https://github.com/bharat-b7/LoopReg)]
+
+* IGR (ICML, 2020) [[paper](https://arxiv.org/abs/2002.10099)] [[code](https://github.com/amosgropp/IGR)]
+
+* Siren (NeurIPS, 2020) [[paper](https://arxiv.org/abs/2006.09661)] [[code](https://github.com/vsitzmann/siren)] [[project](https://vsitzmann.github.io/siren/)]
 
 * SAL (CVPR, 2020) [[paper](https://arxiv.org/abs/1911.10414)] [[code](https://github.com/matanatz/SAL)]
 

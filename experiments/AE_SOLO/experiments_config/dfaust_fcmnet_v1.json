@@ -1,6 +1,6 @@
 {
   "ExperimentsDir": "/home/syao/Program/Experiments/N3D/AE_SOLO",
-  "ExperimentName": "dfaust_comasample_comanet_v2",
+  "ExperimentName": "dfaust_comasample_fcmnet_v1",
   "ProcessedData": "Data",
   "DatasetsDir": "/DATA",
   "TrainSplit": "/home/syao/Program/Source/New3D/data_split_config/dfaust_regis/dfaust_50002_train.json",
@@ -9,10 +9,15 @@
   "TemplateSample": "/home/syao/Program/Datasets/templates/dfaust_sample.pth",
   "LearningRateSchedule": {
     "Type": "Step",
-    "Initial": 8e-3,
+    "Initial": 1e-3,
     "Interval": 1,
     "Factor": 0.99
   },
   "NumEpochs": 300,
-  "SnapshotFrequency": 20
+  "SnapshotFrequency": 20,
+  "NetworkSpecs" : {
+    "filters" : [3, 16, 16, 16, 32],
+    "z_dim" : 8,
+    "weight_num" : 16
+  }
 }

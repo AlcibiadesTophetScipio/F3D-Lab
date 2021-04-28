@@ -14,5 +14,10 @@
     "Factor": 0.99
   },
   "NumEpochs": 300,
-  "SnapshotFrequency": 20
+  "SnapshotFrequency": 20,
+  "NetworkSpecs" : {
+    "filters" : [3, 16, 32, 64, 32],
+    "z_dim" : 256,
+    "weight_num" : 32
+  }
 }

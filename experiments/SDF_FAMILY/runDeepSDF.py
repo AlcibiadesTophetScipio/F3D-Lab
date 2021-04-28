@@ -28,11 +28,11 @@ if __name__ == '__main__':
     t = time.time()
 
     import argparse
-    arg_parser = argparse.ArgumentParser(description="Train a SM network")
+    arg_parser = argparse.ArgumentParser()
     arg_parser.add_argument(
         '-e',
         dest='experiment_config',
-        default='/home/syao/Program/Source/New3D/experiments/SDF_FAMILY/experiments_config/dfaust_deepsdf.json',
+        default='/home/syao/Program/Source/New3D/experiments/SDF_FAMILY/experiments_config/dfaust_deepsdf.json'
     )
     arg_parser.add_argument(
         "--batch_size",
@@ -42,13 +42,24 @@ if __name__ == '__main__':
     arg_parser.add_argument(
         "--load_epoch",
         type=int,
-        default=-1
+        default=-1,
+        help='Select epoch for loading parameters, \
+        "-1" means that load from the latest record and is invalid for "train" of run_type.'
     )
     arg_parser.add_argument(
         '--run_type',
-        default='eval'
+        default='eval',
+        help='Select from [train, eval, rec].'
+    )
+    arg_parser.add_argument(
+        "--rec_res",
+        type=int,
+        default="256",
+        help='Grid resolution.'
     )
     args = arg_parser.parse_args()
+    if args.run_type == 'train':
+        assert arsg.load_epoch >0
 
     with open(args.experiment_config, 'r') as f:
         exper_specs = json.load(f)
@@ -238,7 +249,8 @@ if __name__ == '__main__':
                     rec_files=rec_files,
                     net=net,
                     latent_size=latent_size,
-                    ws=params_io.ws)
+                    ws=params_io.ws,
+                    rec_res=args.rec_res)
 
     tensor_board_writer.close()
     t_duration = time.time() - t

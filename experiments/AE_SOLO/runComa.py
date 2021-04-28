@@ -31,11 +31,11 @@ if __name__ == '__main__':
     t = time.time()
 
     import argparse
-    arg_parser = argparse.ArgumentParser(description="Train a SM network")
+    arg_parser = argparse.ArgumentParser()
     arg_parser.add_argument(
         '-e',
         dest='experiment_config',
-        default='/home/syao/Program/Source/New3D/experiments/AE_SOLO/experiments_config/dfaust_comanet.json',
+        default='/home/syao/Program/Source/New3D/experiments/AE_SOLO/experiments_config/dfaust_comanet_v2.json',
     )
     arg_parser.add_argument(
         "--batch_size",
@@ -130,11 +130,9 @@ if __name__ == '__main__':
     # network setting
     net = ComaNet(downsample_matrices=D_t,
                   upsample_matrices=U_t,
-                  adjacency_matrices=A_t,
-                  filters=[3, 16, 32, 64, 32],
-                  K=[6,6,6,6],
-                  z_dim=16*16,
-                  num_nodes=num_nodes).cuda()
+                  adjacency_matrices=A_t
+                  num_nodes=num_nodes,
+                  **exper_specs['NetworkSpecs']).cuda()
 
     # optimizer setting
     lr_schedules = get_lr(lr_config=exper_specs['LearningRateSchedule'])

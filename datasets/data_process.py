@@ -1,8 +1,32 @@
 import torch
-from pytorch3d.datasets import ShapeNetCore
 import math
 import matplotlib.pyplot as plt
+import numpy as np
 
+def normalize_center_scale(points, scale=None):
+    center = np.mean(points, axis=0)
+    pnts = points - np.expand_dims(center, axis=0)
+    if scale is None:
+        scale = np.abs(pnts).max()
+
+    pnts = pnts / scale
+    return pnts, {'center':center,
+                  'scale':scale,}
+
+def normalize_n1p1(points, keep_aspect_ratio=True):
+    coords, norm_params = normalize_center_scale(points=points, scale=1.0)
+    if keep_aspect_ratio:
+        coord_max = np.amax(coords)
+        coord_min = np.amin(coords)
+    else:
+        coord_max = np.amax(coords, axis=0, keepdims=True)
+        coord_min = np.amin(coords, axis=0, keepdims=True)
+    coords = (coords - coord_min) / (coord_max - coord_min)
+    coords -= 0.5
+    coords *= 2.0
+    return coords, {'scale_min': coord_min,
+                    'scale_max': coord_max,
+                    'center': norm_params['center'],}
 
 def normalize_scale2range(points, spec_range=(0.0, 1.0)):
     batch = points.shape[0]

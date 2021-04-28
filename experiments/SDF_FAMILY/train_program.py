@@ -74,10 +74,12 @@ def train(data_loader, net, optimizer, lat_vecs, exper_specs, epoch):
 
 def calculate_trimesh_metric(gt_mesh, pred_mesh, num_mesh_samples=30000):
     pred_points_sampled = trimesh.sample.sample_surface(pred_mesh, num_mesh_samples)[0]
-    gt_points_np = gt_mesh.vertices
+    gt_points_sampled = trimesh.sample.sample_surface(pred_mesh, num_mesh_samples)[0]
+    # gt_points_np = gt_mesh.vertices
 
     pred_points = torch.tensor(pred_points_sampled).unsqueeze(0).cuda()
-    gt_points = torch.tensor(gt_points_np).unsqueeze(0).cuda()
+    # gt_points = torch.tensor(gt_points_np).unsqueeze(0).cuda()
+    gt_points = torch.tensor(gt_points_sampled).unsqueeze(0).cuda()
 
     # Since there is no one-to-one point mapping relation
     return {'chamfer': chamferDis_bpm(gt_points, pred_points),}
@@ -106,11 +108,11 @@ def eval(files, load_epoch=0, t_writer=None):
         gts_rec = calculate_trimesh_metric(gt_mesh=gt_sample_mesh, pred_mesh=rec_mesh)
 
         for k,v in gt_gts.items():
-            metric[f'{k}_gt2gts'] = v
+            metric[f'{k}_gt2gts'] += v
         for k,v in gt_rec.items():
-            metric[f'{k}_gt2rec'] = v
+            metric[f'{k}_gt2rec'] += v
         for k,v in gts_rec.items():
-            metric[f'{k}_gts2rec'] = v
+            metric[f'{k}_gts2rec'] += v
 
         if t_writer and idx in tensor_show_list:
             name = '_'.join(rec_files[idx].parts[-3:])
@@ -240,7 +242,7 @@ def get_latent_code(decoder,
 
     return latent_vec, loss_num
 
-def reconstruct(data_loader, rec_files, net, ws, latent_size):
+def reconstruct(data_loader, rec_files, net, ws, latent_size, rec_res):
     mesh_dir = ws.get_dir('reconstruction_meshes_dir')
     latent_dir = ws.get_dir('rec_latent_code_dir')
 
@@ -274,7 +276,7 @@ def reconstruct(data_loader, rec_files, net, ws, latent_size):
             sdf_create_mesh(decoder=net,
                             latent_vec=latent_vec,
                             filename=mesh_file,
-                            N=256,
+                            N=rec_res,
                             max_batch=int(2 ** 18),
                             offset=data['norm']['offset'],
                             scale=data['norm']['scale'])
