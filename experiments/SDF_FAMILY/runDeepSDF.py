@@ -44,7 +44,7 @@ if __name__ == '__main__':
         type=int,
         default=-1,
         help='Select epoch for loading parameters, \
-        "-1" means that load from the latest record and is invalid for "train" of run_type.'
+        "-1" means that load from the latest record and is invalid for original "train" of run_type.'
     )
     arg_parser.add_argument(
         '--run_type',
@@ -58,8 +58,6 @@ if __name__ == '__main__':
         help='Grid resolution.'
     )
     args = arg_parser.parse_args()
-    if args.run_type == 'train':
-        assert arsg.load_epoch >0
 
     with open(args.experiment_config, 'r') as f:
         exper_specs = json.load(f)

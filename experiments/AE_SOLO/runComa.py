@@ -130,7 +130,7 @@ if __name__ == '__main__':
     # network setting
     net = ComaNet(downsample_matrices=D_t,
                   upsample_matrices=U_t,
-                  adjacency_matrices=A_t
+                  adjacency_matrices=A_t,
                   num_nodes=num_nodes,
                   **exper_specs['NetworkSpecs']).cuda()
 

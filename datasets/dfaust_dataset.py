@@ -28,7 +28,7 @@ def get_dataset(dataset_dir,
     return train_dataset, test_dataset
 
 if __name__ == '__main__':
-    split_file = '/home/syao/Program/Source/New3D/data_split_config/dfaust/dfaust_50002_train.json'
+    split_file = '/home/syao/Program/Source/New3D/data_split_config/dfaust_regis/dfaust_50002_train.json'
     experiment_dir = '/home/syao/Program/Datasets'
 
     base_dir = Path(experiment_dir)

@@ -1,6 +1,7 @@
 import torch
 import json
 from pathlib import Path
+import os
 
 def get_spec_with_default(specs, key, default):
     try:
@@ -99,4 +100,18 @@ class Handled_Data_IO(object):
 
         for n in self.filenames:
             yield self.ws.get_dir(dir_name)/n[1:]
+
+def get_files(dir):
+    pdir = Path(dir)
+    for root, dirs, files in os.walk(pdir):
+        for filename in files:
+            yield Path(root)/filename
+
+    # example
+    # pwd = Path.cwd()
+    # files = list(get_files(pwd))
+    # print(files)
+
+if __name__ == '__main__':
+    print('Done!')
 

@@ -18,9 +18,6 @@ class DeepSDF_Decoder(nn.Module):
     ):
         super().__init__()
 
-        def make_sequence():
-            return []
-
         dims = [latent_size + 3] + dims + [1]
 
         self.num_layers = len(dims)

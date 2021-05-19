@@ -18,7 +18,6 @@ def train(data_loader, net, optimizer, lat_vecs, exper_specs, epoch):
             'reg':0.0,}
     metric = defaultdict(float)
 
-
     enforce_minmax = True
     clamp_dist = get_spec_with_default(exper_specs, "ClampingDistance", 0.1)
     do_code_regularization = get_spec_with_default(exper_specs, "CodeRegularization", True)
@@ -216,10 +215,10 @@ def get_latent_code(decoder,
     latent_vec.requires_grad = True
     optimizer = torch.optim.Adam([latent_vec], lr=base_lr)
 
+    decoder.eval()
     for i in range(num_iterations):
         optimizer.zero_grad()
         local_adjust_lr(base_lr, optimizer, i, dfactor, iter_interval)
-        decoder.eval()
 
         sdf_data = unpack_sdf_samples_from_ram(data_sdf, num_samples).cuda()
         xyz = sdf_data[:, 0:3]

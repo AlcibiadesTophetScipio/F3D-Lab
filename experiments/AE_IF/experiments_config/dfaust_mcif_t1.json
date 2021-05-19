@@ -1,0 +1,26 @@
+{
+  "ExperimentsDir": "/home/syao/Program/Experiments/N3D/AE_IF",
+  "ExperimentName": "dfaust_comasample_mcif_t1",
+  "ProcessedData": "Data",
+  "DatasetsDir": "/DATA",
+  "TrainSplit": "/home/syao/Program/Source/New3D/data_split_config/dfaust_regis/dfaust_50002_train.json",
+  "TestSplit": "/home/syao/Program/Source/New3D/data_split_config/dfaust_regis/dfaust_50002_test.json",
+  "TemplateFile": "/home/syao/Program/Datasets/templates/faust_template.ply",
+  "NumEpochs": 300,
+  "SnapshotFrequency": 20,
+  "LearningRateSchedule": [{
+    "Type": "Step",
+    "Initial": 1e-3,
+    "Interval": 1,
+    "Factor": 0.99
+  }],
+  "NetworkSpecs" : {
+    "mc_en_filters" : [3, 16, 32, 64, 32],
+    "mc_de_filters": [64, 64, 64, 64, 32],
+    "z_dim": 256,
+    "weight_num" : 32
+  },
+  "ManifoldSubSamples" : 16384,
+  "NomanifoldSubSamples": 16384,
+  "ReconstructionNums": 10
+}

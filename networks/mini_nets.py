@@ -27,7 +27,6 @@ class NMF_InstanceNorm(nn.Module):
 
         return centered_input
 
-
 class PointNet_Encoder(nn.Module):
     '''
     PointNet Encoder by Qi. et.al

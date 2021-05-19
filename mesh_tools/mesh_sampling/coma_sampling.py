@@ -213,7 +213,7 @@ def generate_transform_matrices(mesh, factors):
     return M, A, D, U, F
 
 def coma_sampling(template_mesh, mesh_sample_pth=None):
-    print('COMA sampling')
+    # print('COMA sampling')
     if mesh_sample_pth is not None:
         if osp.exists(mesh_sample_pth):
             # print('Read from {}'.format(mesh_sample_pth))

@@ -23,12 +23,16 @@ A platform for doing some experiments about 3D things.
 
 * FCMA (NeurIPS, 2020) [[paper](https://arxiv.org/abs/2006.04325)] [[code](https://github.com/facebookresearch/VCMeshConv)] [[project](https://zhouyisjtu.github.io/project_vcmeshcnn/vcmeshcnn.html)] 
 
+* Deep3DMM (CVPR, 2021) [[paper](https://arxiv.org/abs/2105.02173)] [[code](https://github.com/zxchen110/Deep3DMM/)]
+
 ### Implicit Representation Methods
 * OccupancyNet (CVOR, 2019) [[paper](https://arxiv.org/abs/1812.03828)] [[code](https://github.com/autonomousvision/occupancy_networks)]
 
 * IM-Net (CVPR, 2019) [[paper](https://arxiv.org/abs/1812.02822)] [[code](https://github.com/czq142857/IM-NET-pytorch)] [[project](https://www.sfu.ca/~zhiqinc/imgan/Readme.html)]
 
-* DeepSDF (CVPR, 2019) [[paper](https://arxiv.org/abs/1901.05103)] [[code](https://github.com/facebookresearch/DeepSDF)]
+* DeepSDF (CVPR, 2019) [[paper](https://arxiv.org/abs/1901.05103)] [[code](https://github.com/facebookresearch/DeepSDF)] [[project](https://virtualhumans.mpi-inf.mpg.de/ifnets/)]
+
+* IF-Net (CVPR, 2020) [[paper](https://arxiv.org/abs/2003.01456)] [[code](https://github.com/jchibane/if-net)]
 
 * MeshSDF (NeurIPS, 2020) [[paper](https://arxiv.org/abs/2006.03997)] [[code](https://github.com/cvlab-epfl/MeshSDF)]
 
